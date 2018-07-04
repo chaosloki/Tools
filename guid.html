@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAPUID</title>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+		body { 
+			margin: 50px 100px; 
+			padding: 0;
+		}
+		input {
+			margin: 10px 0;
+			font-size: 16px;
+		}
+		button {
+			height 30px;
+			padding: 5px 20px;
+		}
+	</style>
+  </head>
+  <body style="">
+    <input id="sapguid" name="sapguid" style="width: 100%" placeholder="SAP-GUID">
+	<br />
+    <input id="normguid" name="normguid" style="width: 100%" placeholder="GUID">
+	<br />
+    <button onclick="convert()">Umwandeln</button>
+	<button onclick="clearFields()">Leeren</button>
+	<script>
+		function clearFields() {
+			var inputSapGuid = document.querySelector("#sapguid");
+			var inputNormGuid = document.querySelector("#normguid");
+			inputSapGuid.value = "";
+			inputNormGuid.value = "";
+		}
+	
+		function convert() {
+			var inputSapGuid = document.querySelector("#sapguid");
+			var inputNormGuid = document.querySelector("#normguid");
+			
+			if(inputSapGuid.value && !inputNormGuid.value) {
+				// SAP -> Normal
+				inputNormGuid.value = SapToNormal(inputSapGuid.value)
+			} else if(!inputSapGuid.value && inputNormGuid.value) {
+				// Normal -> SAP
+				inputSapGuid.value = normalToSap(inputNormGuid.value)
+			} else {
+				// Fehler
+				alert("Ein Feld muss leer sein.");
+			}
+		}
+		
+		function normalToSap(guid) {
+			var result = guid.replace(/-/g,'');
+			return result.toUpperCase();
+		}
+		
+		function SapToNormal(guid) {
+			//  8-4-4-4-12 - Format
+			var result = "";
+			if(guid.length >= 32) {
+				result = insertStringAtIndex(8, guid, "-");
+				result = insertStringAtIndex(13, result, "-");
+				result = insertStringAtIndex(18, result, "-");
+				result = insertStringAtIndex(23, result, "-");
+			} else {
+				alert("GUID ist zu kurz");
+			}
+			return result.toLowerCase();
+		}
+		
+		function insertStringAtIndex(index, text, value) {
+			return text.slice(0, index) + value + text.slice(index);
+		}
+		
+	</script>
+  </body>
+</html>
